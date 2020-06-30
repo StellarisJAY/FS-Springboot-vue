@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>网络存储</title>
+    <!--vue-->
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+    <!--axios-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!--jquery-->
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <!--bootstrap-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="css/fs.css">
+    <script src="js/file.js"></script>
+</head>
+
+<body onload="javascript: getAllFiles()">
+    <nav class="nav navbar-top">
+        <div class="container-fluid">
+            <div class="col-md-3 navbar-header">
+                <a href="#" class="navbar-brand">网络存储</a>
+            </div>
+            <div class="col-md-1 col-md-offset-8" align="center">
+                <a href="#" class="navbar-exit">注销</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid" id="app">
+        <div class="row">
+
+            <!-- 侧边栏-文件-->
+
+            <div class="col-md-2 sidebar">
+                <div class="row card">
+                    <ul class="nav sidebar-nav">
+                        <li class="nav-item">
+                            <a href="" class="nav-text">我的文件</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-text">我的分享</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-text">全网资源</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--侧边栏-好友-->
+                <div class="row card">
+                    <ul class="nav sidebar-nav">
+                        <li class="nav-item">
+                            <a href="" class="nav-text">好友</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-text">消息</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--容量进度条-->
+                <div class="row card progress-card">
+                    <div class="progress">
+                        <div class="progress-bar bg-success" style="width:70%">70%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div class="row card" style="padding:10px">
+                    <div class="col-md-3">
+                        <button class="btn btn-success" data-toggle="modal" data-target="#createFolderModal">新建文件夹</button>
+                        <button class="btn btn-warning" data-toggle="modal" data-target="#uploadFileModal">上传文件</button>
+                    </div>
+                    <div class="col-md-3">
+                        <!--<button class="btn btn-info">返回上级目录</button>
+                        <button class="btn btn-info">根目录</button>-->
+                        <a href="#" v-if="currentPath!=1" onclick="javascript:toUpperPath()">返回上一级</a>
+                        <a href="#" v-if="currentPath!=1" onclick="javascript:toRootPath()">全部文件</a>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <input class="form-control" type="text" name="input" placeholder="搜索...">
+                    </div>
+                </div>
+                <!-- 文件显示区-->
+                <div class="row card pre-scrollable" id="main">
+                    <div  v-for="file in file_list"  class="col-md-2">
+                        <a href="#" v-if="file.type=='folder'" v-on:click="javascript:openFolder(file.file_id)">
+                            <img src="image/folder.jpg" class="file-picture">
+                            <h4>{{file.filename}}</h4>
+                        </a>
+                        <a href="#" v-else-if="file.type=='word'">
+                            <img src="image/word.jpg" class="file-picture">
+                            <h4>{{file.filename}}</h4>
+                        </a>
+                        <a href="#" v-else>
+                            <img src="image/file.jpg" class="file-picture">
+                            <h4>{{file.filename}}</h4>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 创建文件夹modal-->
+
+    <div class="modal fade" id="createFolderModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">创建文件夹</h4>
+                </div>
+                <div class="modal-body">
+                    文件夹名称：
+                    <input type="text" v-model="foldername">
+                    <button class="btn btn-info" onclick="javascript:createFolder()">创建</button>
+                </div>
+
+                <div class="modal-footer" align="center">
+                    <a href="#" data-dismiss="modal">关闭</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 上传文件modal-->
+
+    <div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">上传文件</h4>
+                </div>
+                <div class="modal-body">
+                    文件：
+                    <input type="file" id="file" enctype="mutipart">
+                    <button class="btn btn-info">上传</button>
+                </div>
+
+                <div class="modal-footer" align="center">
+                    <a href="#" data-dismiss="modal">关闭</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    var appVM = new Vue({
+        el: "#app",
+        data: {
+            file_list: [],
+            currentPath: 0
+        }
+    });
+
+    var createFolderVM = new Vue({
+        el: "#createFolderModal",
+        data:{
+            foldername: null,
+            stat: 0
+        }
+    })
+</script>
+</html>

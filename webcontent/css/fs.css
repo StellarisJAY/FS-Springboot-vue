@@ -1,0 +1,47 @@
+.navbar-top{
+    background-color: #4682B4
+}
+.navbar-brand{
+    color: white;
+}
+
+.login-card{
+    background-color: white;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 1px 1px 2px 0.5px rgba(74, 74, 74, 0.5);
+    margin-left: 37.5%;
+    margin-top: 100px;
+    padding:30px;
+}
+.register-box{
+    margin-left:37.5%;
+    border: 1px solid grey;
+    margin-top: 20px;
+}
+.card{
+    background-color: white;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 1px 1px 2px 0.5px rgba(74, 74, 74, 0.5);
+    margin:10px;
+}
+.progress-card{
+    padding: 10px;
+}
+.search-card{
+    padding: 10px;
+}
+
+.file-picture{
+    width: 100px;
+    height: 100px;
+    margin-left:10px;
+    margin-top:10px;
+}
+body{
+    background-color: #ECFFFF
+}
+
+#main{
+    height: 2000px;
+}
+

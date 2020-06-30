@@ -1,2 +1,15 @@
 # FS-Springboot-vue
-File Storage app.  Both Website and wechat-app with SpringBoot backend and vue frontend.
+多平台网络存储工具，使用SpringBoo+MyBatis后端框架，网页前端使用vue框架，app端使用微信小程序框架。
+
+
+# 功能模块
+
+ 1、文件上传下载
+ 
+ 2、文件夹管理，新建文件夹、上传文件到文件夹、移动文件到文件夹、移动文件夹、重命名文件夹等子功能
+ 
+ 3、文件分享：链接密码分享、公开全网分享
+ 
+ 4、好友功能：好友文件传输、私信
+ 
+ 5、管理员平台

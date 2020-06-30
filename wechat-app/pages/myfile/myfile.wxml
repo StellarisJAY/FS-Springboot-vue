@@ -1,0 +1,50 @@
+<!--pages/myfile/myfile.wxml-->
+
+<view class="page">
+  <view class="page__bd">
+    <view class="weui-tab">
+      <view class="weui-navbar" wx:if="{{currentPath!=1}}">
+        <view class="weui-navbar__item">
+          <text class="weui-navbar__label" bindtap="toRootPath">根目录</text>
+        </view>
+        <view class="weui-navbar__item">
+          <text class="weui-navbar__label" bindtap="toUpperPath">返回上级目录</text>
+        </view>
+        <view class="weui-navbar__item">
+          <text class="weui-navbar__label">新建文件夹</text>
+        </view>
+      </view>
+      <view class="weui-tab__pannel file_area">
+        <block wx:for="{{files}}">
+          <view class="file_block">
+            <image wx:if="{{item.type=='folder'}}" bindtap="openFolder" data-id="{{item.file_id}}" class="file_picture" src="/pages/image/folder.png"/>
+            <image wx:else class="file_picture" src="/pages/image/file.png"/>
+
+            <text class="file_name">\n{{item.filename}}</text>
+          </view>
+        </block>
+      </view>
+
+
+       <!-- 底部导航栏-->
+      <view class="weui-tabbar">
+        <view class="weui-tabbar__item" bindtap="toMyfile">
+          <image src="/pages/image/tabbar-files.png" alt class="weui-tabbar__icon"></image>
+          <text class="weui-tabbar__label">全部文件</text>
+        </view>
+        <view class="weui-tabbar__item" bindtap="toShare">
+          <image src="/pages/image/tabbar-share.png" alt class="weui-tabbar__icon"></image>
+          <text class="weui-tabbar__label">我的分享</text>
+        </view>
+        <view class="weui-tabbar__item" bindtap="toResource">
+          <image src="/pages/image/tabbar-resource.png" alt class="weui-tabbar__icon"></image>
+          <text class="weui-tabbar__label">全网资源</text>
+        </view>
+        <view class="weui-tabbar__item" bindtap="toUserinfo">
+          <image src="/pages/image/tabbar-user.png" alt class="weui-tabbar__icon"></image>
+          <text class="weui-tabbar__label">个人中心</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,23 @@
+/* pages/myfile/myfile.wxss */
+.file_name{
+  justify-content: center;
+}
+.file_area{
+  display: flex;
+  flex-wrap: wrap
+}
+.file_picture{
+  width: 150px; height:150px;
+}
+.file_block{
+  margin: 20px;
+}
+.page__hd{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.upload-btn{
+  position: fixed;
+  right: 10px;
+}

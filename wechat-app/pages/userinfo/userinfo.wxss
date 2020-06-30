@@ -1,0 +1,10 @@
+/* pages/userinfo/userinfo.wxss */
+.username{
+  justify-content: center
+}
+.weui-tabbar{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}

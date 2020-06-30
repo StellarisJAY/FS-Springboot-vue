@@ -1,0 +1,2 @@
+<!--pages/test/test.wxml-->
+<text>{{userInfo.username}}</text>

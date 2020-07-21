@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>File Storage</title>
+    <!--bootstrap-->
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <!-- custrom styles-->
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-fixed-top drag">
+        <div class="container-fluid">
+            <div class="col-2">
+                <h4 class="navbar-brand">网络存储</h4>
+            </div>
+            <div class="col-8"></div>
+            <div class="col-2" align="right">
+                <!-- 最小化图标-->
+                <a href="#" class="navbar-brand nodrag">
+                    <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-dash" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5z" />
+                    </svg>
+                </a>
+                <!-- 最大化图标-->
+                <a href="#" class="navbar-brand nodrag">
+                    <svg width="10px" height="10px" viewBox="0 0 16 16" class="bi bi-square" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                    </svg>
+                </a>
+                <!-- 关闭窗口图标-->
+                <a href="#" class="navbar-brand nodrag" onclick="javascript:window.close()">
+                    <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z" />
+                        <path fill-rule="evenodd"
+                            d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <div class="container-fluid" id="app">
+        <div class="row">
+            <!-- 侧边栏-->
+            <div class="col-2 sidebar sidebar-sticky">
+                <!-- 文件管理-->
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">全部文件</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">图片</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">视频</a>
+                    </li>
+                </ul>
+                <hr>
+                <!-- 分享管理-->
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">我的分享</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">全网资源</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">好友</a>
+                    </li>
+                </ul>
+                <hr>
+                <!-- 容量管理-->
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" v-bind:style="{width:used_space}"
+                                v-bind:aria-valuenow="used_space" aria-valuemin="0" aria-valuemax="100">{{used_space}}
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-warning">清空</button>
+                        <button class="btn btn-info">扩容</button>
+                    </li>
+                </ul>
+                <hr>
+                <!-- 设置与更新-->
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">关于</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">设置</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">更新</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- 主要区域-->
+            <div class="col-10">
+                <!-- 操作工具栏-->
+                <div class="row toolbar">
+                    <div class="col-5">
+                        <button class="btn btn-outline-primary">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-upload" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M.5 8a.5.5 0 0 1 .5.5V12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8.5a.5.5 0 0 1 1 0V12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8.5A.5.5 0 0 1 .5 8zM5 4.854a.5.5 0 0 0 .707 0L8 2.56l2.293 2.293A.5.5 0 1 0 11 4.146L8.354 1.5a.5.5 0 0 0-.708 0L5 4.146a.5.5 0 0 0 0 .708z" />
+                                <path fill-rule="evenodd"
+                                    d="M8 2a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0v-8A.5.5 0 0 1 8 2z" />
+                            </svg>
+                            上传
+                        </button>
+                        <button class="btn btn-outline-primary">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M.5 8a.5.5 0 0 1 .5.5V12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8.5a.5.5 0 0 1 1 0V12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8.5A.5.5 0 0 1 .5 8z" />
+                                <path fill-rule="evenodd"
+                                    d="M5 7.5a.5.5 0 0 1 .707 0L8 9.793 10.293 7.5a.5.5 0 1 1 .707.707l-2.646 2.647a.5.5 0 0 1-.708 0L5 8.207A.5.5 0 0 1 5 7.5z" />
+                                <path fill-rule="evenodd"
+                                    d="M8 1a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0v-8A.5.5 0 0 1 8 1z" />
+                            </svg>
+                            下载
+                        </button>
+                        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#createFolder">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-folder-plus"
+                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M9.828 4H2.19a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91H9v1H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181L15.546 8H14.54l.265-2.91A1 1 0 0 0 13.81 4H9.828zm-2.95-1.707L7.587 3H2.19c-.24 0-.47.042-.684.12L1.5 2.98a1 1 0 0 1 1-.98h3.672a1 1 0 0 1 .707.293z" />
+                                <path fill-rule="evenodd"
+                                    d="M13.5 10a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1H13v-1.5a.5.5 0 0 1 .5-.5z" />
+                                <path fill-rule="evenodd"
+                                    d="M13 12.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0v-2z" />
+                            </svg>
+                            新建文件夹
+                        </button>
+                    </div>
+                    <div class="col-5"></div>
+                    <div class="col-1">
+                        <a href="#" class="nav-link" v-on:click="displaymode=0">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-grid" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z" />
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="col-1">
+                        <a href="#" class="nav-link" v-on:click="displaymode=1">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-list-ul" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- 搜索栏和路径-->
+                <div class="row search-bar">
+                    <div class="col-2">
+                        <a href="#" v-if="path_stack.length > 1" v-on:click="toUpperPath()">返回上一级</a>
+                    </div>
+                    <div class="col-3">
+                        <li class="list-inline-item" v-if="path_stack.length > 1"><a href="#"
+                                v-on:click="toRootPath()">根目录</a>
+                    </div>
+                    <div class="col-4"></div>
+                    <div class="col-3">
+                        <input type="text" class="form-control search-input" placeholder="搜索我的文件...">
+                    </div>
+                </div>
+                <!-- 文件显示区域-->
+                <div class="row pre-scrollable" style="height:100%">
+                    <!-- 列表模式-->
+                    <table class="table table-bordered" v-if="displaymode==1">
+                        <thead>
+                            <th><input type="checkbox"></th>
+                            <th>文件名</th>
+                            <th>类型</th>
+                            <th>大小</th>
+                            <th>修改日期</th>
+                            <th>操作</th>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in files">
+                                <td><input type="checkbox"></td>
+                                <td v-if="item.type=='folder'"><a href="#"
+                                        v-on:click="enterFolder(item.file_id)">{{item.filename}}</a></td>
+                                <td v-else>{{item.filename}}</td>
+                                <td>{{item.type}}</td>
+                                <td>{{item.size}}</td>
+                                <td>{{item.createdate}}</td>
+                                <td><a href="#">详情</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- 缩略图模式-->
+                    <div class="container-fluid" v-else>
+                        <div class="row">
+                            <div class="col-2 file-block" v-for="item in files">
+                                <a href="#" v-if="item.type=='folder'" v-on:click="enterFolder(item.file_id)">
+                                    <img src="image/folder.jpg" class="file-picture">
+                                    <br>{{item.filename}}
+                                </a>
+                                <a href="#" v-else-if="item.type=='word'">
+                                    <img src="image/word.jpg" class="file-picture">
+                                    <br>{{item.filename}}
+                                </a>
+                                <a href="#" v-else>
+                                    <img src="image/file.jpg" class="file-picture">
+                                    <br>{{item.filename}}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 创建文件夹modal-->
+    <div class="modal" tabindex="-1" role="dialog" id="createFolder">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">新建文件夹</h5>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control" required v-model="name">
+                    <p style="color:red" v-if="nameValid==false">文件夹名称必须少于20字符</p>
+                    <p style="color:red" v-if="nameDuplicate==true">文件夹重名</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" v-on:click="checkName()">创建</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- 引入jquery 和 bootstrap js-->
+<script>
+    window.$ = window.jQuery = require('./node_modules/jquery/dist/jquery.min.js');
+</script>
+<script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!--vue.js-->
+<script src="./node_modules/vue/dist/vue.min.js"></script>
+<!--axios-->
+<script src="./node_modules/axios/dist/axios.min.js"></script>
+<!-- 引入request方法-->
+<script src="js/requests.js"></script>
+
+<!-- 文件相关逻辑代码-->
+<script src="js/file.js"></script>
+
+</html>

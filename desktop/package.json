@@ -1,0 +1,20 @@
+{
+  "name": "filestorage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron index.js"
+  },
+  "author": "Jay",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "bootstrap": "^4.5.0",
+    "electron": "^9.1.0",
+    "electron-packager": "^15.0.0",
+    "jquery": "^3.5.1",
+    "vue": "^2.6.11"
+  }
+}

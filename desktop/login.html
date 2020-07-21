@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>File Storage</title>
+    <!--bootstrap-->
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+    <!-- 顶部任务栏-->
+    <nav class="navbar navbar-fixed-top drag">
+        <div class="container-fluid">
+            <div class="col-2">
+                <h4 class="navbar-brand">网络存储</h4>
+            </div>
+
+            <div class="col-8">
+
+            </div>
+            <div class="col-2" align="right">
+                <!-- 最小化图标-->
+                <a href="#" class="navbar-brand nodrag">
+                    <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-dash" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5z" />
+                    </svg>
+                </a>
+                <!-- 最大化图标-->
+                <a href="#" class="navbar-brand nodrag">
+                    <svg width="10px" height="10px" viewBox="0 0 16 16" class="bi bi-square" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                    </svg>
+                </a>
+                <!-- 关闭窗口图标-->
+                <a href="#" class="navbar-brand nodrag" onclick="javascript:window.close()">
+                    <svg width="20px" height="20px" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z" />
+                        <path fill-rule="evenodd"
+                            d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid" id="app">
+        <div class="row">
+            <div class="col-3 login-aria">
+                用户名：
+                <input type="text" class="form-control" v-model="username" id="username">
+                <p v-if="u_exist==false" style="color: red"> ! 用户不存在</p>
+                <div class="row">
+                    <div class="col-7">密码：</div>
+                    <div class="col-5">
+                        <a href="#">忘记密码</a>
+                    </div>
+                </div>
+                <input type="password" class="form-control" v-model="password" id="password">
+                <p style="color:red" v-if="p_right==false"> ! 密码错误</p>
+                <div class="row">
+                    <div class="col-7"></div>
+                    <div class="col-5">
+                        <input type="checkbox">记住我
+                    </div>
+                </div>
+                <button class="btn btn-block btn-primary" v-on:click="login">登录</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- 引入jquery 和 bootstrap js-->
+<script>
+    window.$ = window.jQuery = require('./node_modules/jquery/dist/jquery.min.js');
+</script>
+<script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!--vue.js-->
+<script src="./node_modules/vue/dist/vue.min.js"></script>
+<!--axios-->
+<script src="./node_modules/axios/dist/axios.min.js"></script>
+<!--封装的request方法-->
+<script src="./js/requests.js"></script>
+<!--登陆页面相关的逻辑代码-->
+<script src="./js/login.js"></script>
+<style>
+.login-aria{
+    background-color: white;
+    margin-left: 37.5%;
+    margin-top: 5%;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 1px 1px 2px 0.5px rgba(74, 74, 74, 0.5);
+    padding: 20px;
+}
+.navbar-fixed-top{
+    background-color:#409EFF;
+}
+body{
+    background-color: #EBEEF5;
+}
+
+.navbar-brand{
+    color:white;
+}
+.nodrag{
+    -webkit-app-region:no-drag;
+}
+.drag{
+    -webkit-app-region: drag
+}
+
+.no-drag{
+    -webkit-app-region: no-drag
+}
+</style>
+</html>

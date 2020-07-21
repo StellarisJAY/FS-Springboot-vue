@@ -1,0 +1,52 @@
+.navbar-fixed-top{
+    background-color:#409EFF;
+}
+.navbar-brand{
+    color:white;
+}
+.nodrag{
+    -webkit-app-region:no-drag;
+}
+.drag{
+    -webkit-app-region: drag
+}
+
+.no-drag{
+    -webkit-app-region: no-drag
+}
+
+.sidebar{
+    background-color: #EBEEF5;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+body{
+    background-color:white;
+    
+}
+
+
+.search-input{
+    border-radius: 20px 20px 20px 20px;
+    outline: none;
+    border: none;
+}
+
+.toolbar{
+    background-color: #F2F6FC;
+    padding: 10px;
+    border-bottom:1px solid #E4E7ED;
+}
+
+.search-bar{
+    background-color: #F2F6FC;
+    border-bottom: 1px solid #E4E7ED;
+}
+.file-picture{
+    width: 50px;
+    height: 50px;
+    margin: 10px;
+}
+.fileblock{
+    margin: 40px;
+}

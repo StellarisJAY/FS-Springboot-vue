@@ -1,5 +1,5 @@
-# FS-Springboot-vue
-多平台网络存储工具，使用SpringBoo+MyBatis后端框架，网页前端使用vue框架，app端使用微信小程序框架。
+# FS-Springboot-vue-electron
+多平台网络存储工具，使用SpringBoot+MyBatis后端框架，网页前端使用vue框架，app端使用微信小程序框架，桌面端使用electron+vue+bootstrap技术栈完成（接口与网页端相同）
 
 
 # 功能模块

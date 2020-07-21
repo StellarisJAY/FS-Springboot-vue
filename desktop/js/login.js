@@ -40,42 +40,6 @@ var appVM = new Vue({
                     }
                 }
             })
-
-            /*axios.request({
-                url: servicePath + '/login',
-                method: 'post',
-                dataType: 'json',
-                params: {
-                    'username': this.username,
-                    'password': this.password
-                }
-            })
-                .then(function (response) {
-                    // 返回状态1，登录成功
-                    if (response.data.status == 1) {
-                        // 记录 token 值
-                        window.sessionStorage.setItem("token", response.data.token);
-                        // 设置当前路径
-                        window.sessionStorage.setItem("currentPath", 1);
-                        window.location = "index.html";
-                    }
-                    else {
-                        // 登陆失败
-                        // 用户不存在
-                        if (response.data.status == -1) {
-                            that.u_exist = false;
-                            document.getElementsByName("body").focus();
-                        }
-                        // 密码错误
-                        else {
-                            that.p_right = false;
-                            document.getElementById("password").focus();
-                        }
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                })*/
         }
     }
 })

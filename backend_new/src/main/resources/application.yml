@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://****/db_fs?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+    username: root
+    password: ******
+    type: com.alibaba.druid.pool.DruidDataSource
+server:
+  port: 8001

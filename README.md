@@ -14,6 +14,18 @@
  
  5、管理员平台
  
+ # 说明
+ ## 源代码说明
+ 1、backend_new: 新的后端源代码，采用springboot编写
+ 
+ 2、desktop：桌面端前端代码，采用html+js+css，使用了npm、vue.js、axios、bootstrap等前端技术栈，通过electron打包成桌面应用
+ 
+ 3、src: 旧后端代码（功能不齐全），暂时网页端和微信小程序使用该后端
+ 
+ 4、webcontent: 网页端前端代码，采用html+js+css，使用了vue.js、axios、bootstrap搭建
+ 
+ 5、wechatapp：微信小程序端，原生wxml和javascript开发，使用了weui界面库
+ 
  # 更新日志
  
  ## 2020.07.22 2nd UPDATE （21：33）

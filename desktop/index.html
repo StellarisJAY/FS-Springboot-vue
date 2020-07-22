@@ -112,7 +112,7 @@
                 <!-- 操作工具栏-->
                 <div class="row toolbar">
                     <div class="col-5">
-                        <button class="btn btn-outline-primary">
+                        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#uploadModal">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-upload" fill="currentColor"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
@@ -246,6 +246,25 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                     <button type="button" class="btn btn-primary" v-on:click="checkName()">创建</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 上传文件modal-->
+    <div class="modal" tabindex="-1" role="dialog" id="uploadModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">上传文件</h5>
+                </div>
+                <div class="modal-body">
+                    <input type="file" class="form-control" @change="checkUploadFile($event)">
+                    <p style="color:red" v-if="fileTooBig==true">！文件太大</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" v-on:click="uploadFile()">上传</button>
                 </div>
             </div>
         </div>

@@ -1,10 +1,7 @@
 package com.jay.fs.dao;
 
 import com.jay.fs.bean.FileBean;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,4 +26,14 @@ public interface UserFileDao {
             "" +
             "DELETE FROM tb_file WHERE file_id=#{file_id};")
     public Integer deleteFile(Integer file_id, Integer user_id);
+
+
+    @Insert("INSERT tb_file VALUES(#{file.file_id}, #{file.filename}, " +
+            "#{file.type}, #{file.size}, #{file.creator.user_id}, #{file.createdate}, #{file.url});" +
+            "" +
+            "INSERT tb_user_file VALUES(#{user_id}, #{file.file_id}, #{path});")
+    public Integer addFile(@Param("file") FileBean fileBean, @Param("user_id") Integer user_id, @Param("path") Integer path);
+
+    @Select("SELECT MAX(file_id) FROM tb_file;")
+    public Integer getMaxId();
 }

@@ -57,6 +57,14 @@ var appVM = new Vue({
 
             // 加载路径内容
             this.getFilesAtCurrentPath();
+        },
+        deleteFolder: (folder_id)=>{
+            var c = confirm("删除该文件夹会同时删除文件夹内容，是否确定删除该文件夹？");
+            if(c == false)return;
+            request("/folder", "DELETE", {token: window.sessionStorage.getItem("token")}, {folder_id: folder_id}, 2000)
+            .then(response=>{
+                appVM.getFilesAtCurrentPath();
+            });
         }
     }
 });

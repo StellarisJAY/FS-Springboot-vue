@@ -202,7 +202,7 @@
                                 <td>{{item.type}}</td>
                                 <td>{{item.size}}</td>
                                 <td>{{item.createdate}}</td>
-                                <td><a href="#">详情</a></td>
+                                <td><a href="#" v-on:click="deleteFolder(item.file_id)">删除</a></td>
                             </tr>
                         </tbody>
                     </table>

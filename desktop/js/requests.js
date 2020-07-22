@@ -26,3 +26,21 @@ function request(url, method, headers, params, timeout){
         });
     });
 }
+
+/**
+ * POST 请求
+ * @param {*} url 
+ * @param {*} data 
+ * @param {*} config 
+ */
+function request_post(url, data, config){
+    return new Promise((resolve, reject)=>{
+        axios.post(servicePath + url, data, config)
+        .then(response=>{
+            resolve(response);
+        })
+        .catch(error=>{
+            reject(error);
+        })
+    })
+}

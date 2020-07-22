@@ -1,7 +1,10 @@
+const { default: Axios } = require("axios");
+
 var appVM = new Vue({
     el: '#app',
     data: {
-        used_space: '',  // 已使用空间大小
+        used_space: 0,  // 已使用空间大小
+        max_space: 0,
         files: [],       // 当前路径所有文件
         displaymode: 1,  // 显示方式
         currentPath: 1,  // 当前路径
@@ -18,6 +21,9 @@ var appVM = new Vue({
         this.currentPath = window.sessionStorage.getItem("currentPath");
         // 加载根目录文件
         this.getFilesAtCurrentPath();
+
+        this.getMaxSpace();
+        this.getUsedSpace();
     },
     methods: {
         // 获取当前路径下的所有文件
@@ -27,6 +33,22 @@ var appVM = new Vue({
             request('/user_files', 'GET', {token: window.sessionStorage.getItem("token")}, {path: this.currentPath}, 2000)
             .then(resp=>{
                 that.files = resp.data;
+            });
+        },
+
+        getUsedSpace: function(){
+            var that = this;
+            request('/user/used_space', 'GET', {token: window.sessionStorage.getItem("token")}, null, 2000)
+            .then(response=>{
+                that.used_space = response.data;
+            }); 
+        },
+
+        getMaxSpace: function(){
+            var that = this;
+            request('/user/max_space', 'GET', {token: window.sessionStorage.getItem('token')}, null, 2000)
+            .then(response=>{
+                that.max_space = response.data;
             });
         },
         // 进入文件夹
@@ -115,6 +137,52 @@ var createFolderVM = new Vue({
                 // 隐藏模态框
                 $("#createFolder").modal('hide');
             });
+        }
+    }
+})
+
+
+var uploadVM = new Vue({
+    el: "#uploadModal",
+    data:{
+        fileTooBig: false,
+        upload_file: null,
+    },
+    methods: {
+        // 上传文件检查
+        checkUploadFile: function(){
+            var file = event.target.files[0];
+            // 文件大小过大
+            if(file.size + appVM.used_space > appVM.max_space){
+                this.fileTooBig = true;
+            }
+            else{
+                var formData = new FormData();
+                formData.append('file', file); // formdata添加文件
+                formData.append('path', window.sessionStorage.getItem('currentPath')); // 添加上传路径
+                this.upload_file = formData;
+                this.fileTooBig = false;
+            }
+        },
+        // 上传文件
+        uploadFile: function(){
+            if(this.fileTooBig == false){
+                let config = {
+                    headers: {
+                      'Content-Type': false,   // form-data不需要设置contenttype
+                      'token': window.sessionStorage.getItem('token') // token
+                    }
+                  };
+                // 发送上传文件请求
+                request_post("/file/upload", this.upload_file, config)
+                .then(response=>{
+                    if(response.data.status == '1'){
+                        appVM.getFilesAtCurrentPath(); // 上传成功，刷新当前目录
+                        appVM.getUsedSpace();     // 刷新已用空间
+                        $("#uploadModal").modal('hide'); // 隐藏上传modal
+                    }
+                })
+            }
         }
     }
 })

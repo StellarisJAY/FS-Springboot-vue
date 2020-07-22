@@ -1,6 +1,7 @@
 package com.jay.fs.dao;
 
 import com.jay.fs.bean.FileBean;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -23,4 +24,9 @@ public interface UserFileDao {
             "uf.parent=#{path} AND " +
             "u.user_id=f.creator")
     public List<FileBean> getUserFilesAtPath(@Param("user_id") int user_id, @Param("path")int path);
+
+    @Delete("DELETE FROM tb_user_file WHERE file_id=#{file_id} AND user_id=#{user_id};" +
+            "" +
+            "DELETE FROM tb_file WHERE file_id=#{file_id};")
+    public Integer deleteFile(Integer file_id, Integer user_id);
 }

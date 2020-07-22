@@ -1,8 +1,7 @@
 package com.jay.fs.controller;
 
 import com.alibaba.druid.support.json.JSONUtils;
-import com.jay.fs.bean.FileBean;
-import com.jay.fs.bean.service.folder.FolderService;
+import com.jay.fs.service.folder.FolderService;
 import com.jay.fs.dao.FolderDao;
 import com.jay.fs.util.TokenUtil;
 import org.slf4j.Logger;
@@ -29,6 +28,14 @@ public class FolderController {
     // logger
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * 处理创建文件夹请求
+     * @param foldername
+     * @param path
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     @RequestMapping(value="/folder", method = RequestMethod.POST)
     public void createFolder(String foldername, Integer path, HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=utf-8");
@@ -46,6 +53,14 @@ public class FolderController {
         map.put("status", String.valueOf(status));
         response.getWriter().write(JSONUtils.toJSONString(map));
     }
+
+    /**
+     * 文件夹重名检查处理
+     * @param name
+     * @param path
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/folder/check/name", method = RequestMethod.GET)
     public Integer checkFoldername(String name, Integer path, HttpServletRequest request){
         String token = request.getHeader("token");
@@ -54,4 +69,21 @@ public class FolderController {
 
         return folderDao.checkName(name, user_id, path) > 0 ? 1 : 0;
     }
+
+    /**
+     * 删除文件夹接口, ./folder DELETE
+     * @param folder_id
+     * @param request
+     * @return
+     */
+    @RequestMapping(value="/folder", method=RequestMethod.DELETE)
+    public Integer deleteFolder(Integer folder_id, HttpServletRequest request){
+        String token = request.getHeader("token");
+        int user_id = TokenUtil.getUserId(token);
+
+        logger.info("接收到删除文件夹请求：folder_id=" + folder_id + ";token=" + token);
+        int status = folderService.deleteFolder(folder_id, user_id);
+        return status;
+    }
+
 }

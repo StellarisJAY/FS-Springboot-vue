@@ -1,10 +1,7 @@
 package com.jay.fs.dao;
 
 import com.jay.fs.bean.FileBean;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -30,4 +27,6 @@ public interface FolderDao {
             "f.filename=#{name} AND " +
             "uf.parent=#{path}")
     public Integer checkName(String name, Integer user_id, Integer path);
+
+
 }

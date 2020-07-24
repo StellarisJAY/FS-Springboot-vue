@@ -34,6 +34,18 @@ public interface UserFileDao {
             "INSERT tb_user_file VALUES(#{user_id}, #{file.file_id}, #{path});")
     public Integer addFile(@Param("file") FileBean fileBean, @Param("user_id") Integer user_id, @Param("path") Integer path);
 
+    @Select("SELECT f.file_id, f.filename, " +
+            "f.type, f.size, " +
+            "u.user_id AS 'creator.user_id', " +
+            "u.username AS 'creator.username', u.email AS 'creator.email', " +
+            "u.auth AS 'creator.auth', f.createdate, f.url " +
+            "FROM tb_file AS f, tb_user AS u, tb_user_file AS uf " +
+            "WHERE f.creator=u.user_id AND " +
+            "f.file_id=#{file_id} AND " +
+            "uf.user_id=#{user_id} AND " +
+            "uf.file_id=f.file_id")
+    public FileBean getFileById(int file_id, int user_id);
+
     @Select("SELECT MAX(file_id) FROM tb_file;")
     public Integer getMaxId();
 }

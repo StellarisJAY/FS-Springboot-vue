@@ -31,11 +31,16 @@ public class UserFileServiceImpl implements UserFileService{
 
         // 设置存储地址
         String username = userDao.getUsername(user_id);
-        String storagePath = "D:\\fs_storage\\" + username + "\\" + filename;
 
+        // 本地调试存储路径
+        //String storagePath = "D:\\fs_storage\\" + username + "\\" + filename;
+        String storagePath = "/opt/tomcat/webapps/fs_storage/" + username + "/" + filename;
         // 在该地址创建文件对象
         File dest = new File(storagePath);
         try {
+            if(!dest.exists()){
+                dest.mkdirs();
+            }
             // 将文件写入路径中
             file.transferTo(dest);
 
@@ -51,12 +56,18 @@ public class UserFileServiceImpl implements UserFileService{
             fileBean.setSize(size);
             fileBean.setCreator(creator);
             fileBean.setCreatedate(LocalDate.now().toString());
-            fileBean.setUrl("http://182.92.116.152:8080/fs_storage/" + username + "/" + filename);
+            // 设置下载的url
+            fileBean.setUrl("/opt/tomcat/webapps/fs_storage/" + username + "/" + filename);
 
             return userFileDao.addFile(fileBean, user_id, path);
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    @Override
+    public FileBean getFileById(int file_id, int user_id) {
+        return userFileDao.getFileById(file_id, user_id);
     }
 }

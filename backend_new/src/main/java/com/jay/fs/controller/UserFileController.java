@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,5 +85,36 @@ public class UserFileController {
 
         // 返回json
         response.getWriter().write(JSONUtils.toJSONString(map));
+    }
+
+    @RequestMapping(value="/download/id", method=RequestMethod.GET)
+    public void downloadFile(@RequestParam("file_id") int file_id, HttpServletRequest request, HttpServletResponse response) throws IOException{
+        String token = request.getHeader("token");
+        int user_id = TokenUtil.getUserId(token);
+
+        logger.info("获取下载请求：file_id=" + file_id + ";token=" + token);
+
+        // 从数据库获取文件基本信息，同时检查用户对文件的拥有权
+        FileBean file = userFileService.getFileById(file_id, user_id);
+
+        // 设置下载的http头
+        response.setContentType("application/force-download");
+        response.addHeader("Content-Disposition", "attachment:filename=" + file.getFilename());
+
+        logger.info("开启下载流，文件名=" + file.getFilename() + " ; 大小：" + file.getSize() + "byte");
+
+        // 开启下载流
+        byte[] bytes = new byte[1024];
+        File fileObj = new File(file.getUrl()); // 打开指定文件
+        OutputStream os = response.getOutputStream();// 初始化response 输出流
+
+        FileInputStream fileInputStream = new FileInputStream(fileObj);
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+        int i = bufferedInputStream.read(bytes);
+
+        while(i != -1) {
+            os.write(bytes, 0, i);
+            i = bufferedInputStream.read(bytes);
+        }
     }
 }

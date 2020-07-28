@@ -4,7 +4,8 @@ var appVM = new Vue({
         username: '',
         password: '',
         p_right: true,
-        u_exist: true
+        u_exist: true,
+        show_spinner: false
     },
     mounted: function () {
         p_right = true;
@@ -12,13 +13,13 @@ var appVM = new Vue({
     },
     methods: {
         login: function () {
-            var that = this;
+            var that = appVM;
             this.p_right = true;
             this.u_exist = true;
+            this.show_spinner = true;
             // 发送登录请求，完成后记录token
-            request('/login', 'POST', {}, {username: this.username, password: this.password}, 2000)
-            .then(response=>{
-                if(response.data.status == 1){
+            request('/login', 'POST', {}, { username: this.username, password: this.password }, 2000)
+                .then(response => {
                     // 返回状态1，登录成功
                     if (response.data.status == 1) {
                         // 记录 token 值
@@ -38,8 +39,8 @@ var appVM = new Vue({
                             that.p_right = false;
                         }
                     }
-                }
-            })
+                    that.show_spinner = false;
+                })
         }
     }
 })

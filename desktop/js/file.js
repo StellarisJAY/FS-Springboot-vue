@@ -1,4 +1,13 @@
 const { default: Axios } = require("axios");
+var fs = require("fs");
+const {ipcRenderer} = require("electron");
+
+
+function initIpcRenderer(){
+    ipcRenderer.on('savefile-reply', (event, arg)=>{
+        console.log("文件已保存");              
+    });
+}
 
 var appVM = new Vue({
     el: '#app',
@@ -12,8 +21,10 @@ var appVM = new Vue({
         path_stack: [1], // 路径栈
 
         download_queue: [], // 下载任务队列
+        downloadPath: '',   // 下载保存路径
+        currentDownloadSpeed: '施工中',
         selected_list: [],  // 选中文件列表
-        upload_stack: []    // 上传栈（暂时未使用）
+        upload_stack: []    // 上传栈（暂时未使用)
     },
     /**
      * 页面加载过程：
@@ -28,13 +39,21 @@ var appVM = new Vue({
             alert("你还没有登陆");
             window.location = "login.html";
         }
+        
         var that = this;
-        that.getMaxSpace();
-        that.getUsedSpace();
+        
+        Axios.get("./settings.json")
+        .then(response=>{
+            that.downloadPath = response.data.download_path_win32;
+        });
+        this.getMaxSpace();
+        this.getUsedSpace();
         // 初始化当前路径
-        that.currentPath = window.sessionStorage.getItem("currentPath");    
+        this.currentPath = window.sessionStorage.getItem("currentPath");    
         // 加载根目录文件
-        that.getFilesAtCurrentPath();
+        this.getFilesAtCurrentPath();
+
+        initIpcRenderer();
     },
     methods: {
         /**
@@ -149,7 +168,9 @@ var appVM = new Vue({
             // 不在队列中，添加
             this.selected_list.push({file_id: file.file_id, filename: file.filename, size: file.size, type: file.type, progress: 0});
         },
-
+        getCurrentDownload: function(){
+            return this.download_queue[0];
+        },
         /**
          * 开始下载，初始化下载队列
          * 
@@ -159,38 +180,32 @@ var appVM = new Vue({
             // 把选中的文件装入下载队列
             this.download_queue = this.selected_list.concat();
             // 开始递归下载过程
-            this.download(this.getNextDownload().file_id);
+            this.download(this.download_queue[0]);
         },
-
-        /**
-         * 获取下一个文件，同时出队已完成文件
-         */ 
-        getNextDownload: function(){
-            return (this.download_queue.shift());
-        },
-
         /**
          * 递归下载队列，逐个完成下载请求：
-         * 1、发送下载请求
-         * 2、请求完成（接收文件完成），储存文件到本地文件系统（未完工）
-         * 3、写入完成，判断下载队列是否还有未下载文件
-         * 4、如果有：递归调用download，下载下一个文件
+         * 1、向后端发送下载请求
+         * 2、接收到response后，处理成Buffer数组
+         * 3、向主进程发送保存文件请求，主进程使用文件系统api保存下载的数据
+         * 4、完成的任务出队，判断下载队列是否还有其他任务，有则递归调用继续下载
          * @param {*} file_id 
          */ 
-        download: function(file_id){
-            var that = this;
+        download: function(file){
             // 下载请求，当请求完成后再判断队列是否已完成，未完成就递归调用本身下载下一个
-            request("/download/id", "GET", {token: window.sessionStorage.getItem("token")}, {file_id: file_id}, 120000000)
+            download_request("/download/id", {file_id: file.file_id}, appVM)
             .then(response=>{
-                console.log(response);
-                // 获取队列下一个文件
-                var next = that.getNextDownload();
-                if(next != null){
-                    that.download(next.file_id);
+                // 将response的数据包装成buffer
+                let buffer = Buffer.from(response.data);
+                // 向主进程发送保存文件请求
+                ipcRenderer.send("savefile-request", {data: buffer, path: appVM.downloadPath, file: file});
+                // 当前任务出队
+                appVM.download_queue.shift();
+                // 判断是否还有未完成任务
+                if(appVM.download_queue.length > 0){
+                    appVM.download(appVM.download_queue[0]);
                 }
-            });
+            })
         },
-
         /**
          * 更新使用空间比例
          */ 
@@ -210,6 +225,18 @@ var appVM = new Vue({
                 return Math.round(value/1024) + 'KB';
             else
                 return Math.round(value/(1024*1024)) + 'MB';
+        },
+        getDownloadSpeed: function(received, time){
+            let speed = received / time;
+            if(speed < 1024){
+                return Math.round(speed) + 'B/s';
+            }
+            else if(speed < 1024 * 1024){
+                return Math.round(speed/1024) + 'kB/s';
+            }
+            else{
+                return speed/(1024*1024) + 'MB/s';
+            }
         }
     }
 });

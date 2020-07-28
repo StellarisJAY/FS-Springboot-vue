@@ -16,17 +16,27 @@
  
  # 说明
  ## 源代码说明
- 1、backend_new: 新的后端源代码，采用springboot编写
+ 1、backend_new（稳定）: 新的后端源代码，采用springboot编写
  
- 2、desktop：桌面端前端代码，采用html+js+css，使用了npm、vue.js、axios、bootstrap等前端技术栈，通过electron打包成桌面应用
+ 2、desktop（开发中）：桌面端前端代码，采用html+js+css，使用了npm、vue.js、axios、bootstrap等前端技术栈，通过electron打包成桌面应用
  
- 3、src: 旧后端代码（功能不齐全），暂时网页端和微信小程序使用该后端
+ 3、src（旧版）: 旧后端代码（功能不齐全），未来将不再使用
  
- 4、webcontent: 网页端前端代码，采用html+js+css，使用了vue.js、axios、bootstrap搭建
+ 4、webcontent（过期，等待重构）: 网页端前端代码，采用html+js+css，使用了vue.js、axios、bootstrap搭建
  
- 5、wechatapp：微信小程序端，原生wxml和javascript开发，使用了weui界面库
+ 5、wechatapp（过期，等待重构）：微信小程序端，原生wxml和javascript开发，使用了weui界面库
  
  # 更新日志
+ ## 2020.07.28
+ 1、更新完善桌面端文件下载功能，加入文件下载进度条、多文件下载的下载队列
+ 
+ 2、添加了设置文件（修改设置暂时没在桌面端体现），文件中配置了默认下载保存地址、常用用户名等信息
+ 
+ 3、后端修复了下载文件接口的bug：下载文件编码错误、响应头content-Type错误等
+ 
+ 4、下载功能的文件保存逻辑从页面进程转到主进程
+ 
+ 5、优化了下载功能的代码
  
  ## 2020.07.24
  1、更新桌面端的文件下载、多文件下载队列

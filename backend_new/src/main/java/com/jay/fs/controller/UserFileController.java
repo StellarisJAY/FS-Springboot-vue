@@ -9,12 +9,16 @@ import com.jay.fs.util.TokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.activation.MimetypesFileTypeMap;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,30 +95,31 @@ public class UserFileController {
     public void downloadFile(@RequestParam("file_id") int file_id, HttpServletRequest request, HttpServletResponse response) throws IOException{
         String token = request.getHeader("token");
         int user_id = TokenUtil.getUserId(token);
-
         logger.info("获取下载请求：file_id=" + file_id + ";token=" + token);
 
         // 从数据库获取文件基本信息，同时检查用户对文件的拥有权
         FileBean file = userFileService.getFileById(file_id, user_id);
 
-        // 设置下载的http头
-        response.setContentType("application/force-download");
-        response.addHeader("Content-Disposition", "attachment:filename=" + file.getFilename());
-
-        logger.info("开启下载流，文件名=" + file.getFilename() + " ; 大小：" + file.getSize() + "byte");
-
         // 开启下载流
         byte[] bytes = new byte[1024];
         File fileObj = new File(file.getUrl()); // 打开指定文件
-        OutputStream os = response.getOutputStream();// 初始化response 输出流
 
-        FileInputStream fileInputStream = new FileInputStream(fileObj);
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-        int i = bufferedInputStream.read(bytes);
+        // 获取文件mime类型
+        String content_type = new MimetypesFileTypeMap().getContentType(fileObj);  // 根据文件自动识别返回content-type
+        response.setHeader("Content-type", content_type);
+        // 设置响应头
+        response.addHeader("Content-Disposition", "attachment:filename=" + URLEncoder.encode(file.getFilename(), "utf-8"));
+        ServletOutputStream os = response.getOutputStream();// 初始化response 输出流
 
-        while(i != -1) {
-            os.write(bytes, 0, i);
-            i = bufferedInputStream.read(bytes);
+        logger.info("开启下载流，文件名=" + file.getFilename() + " ; 大小：" + file.getSize() + "byte");
+        logger.info("ContentType: " + response.getContentType());
+
+        FileInputStream fileInputStream = new FileInputStream(fileObj); // 获取文件输入流
+
+        // 读取并写入response输出流
+        int s = 0;
+        while((s = fileInputStream.read(bytes)) != -1){
+            os.write(bytes, 0, s);
         }
     }
 }

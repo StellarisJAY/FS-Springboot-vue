@@ -26,7 +26,7 @@ public class UserFileServiceImpl implements UserFileService{
     @Override
     public Integer addNewFile(MultipartFile file, int user_id, int path) {
         String filename = file.getOriginalFilename();
-        String suffix = filename.substring(filename.lastIndexOf('.'));
+        String suffix = filename.substring(filename.lastIndexOf('.') + 1);
         int size = (int)file.getSize();
 
         // 设置存储地址

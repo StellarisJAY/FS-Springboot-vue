@@ -1,5 +1,5 @@
 // 默认的请求基础地址
-const servicePath = "http://******:8001";
+const servicePath = "http://182.92.116.152:8001";
 
 /**
  * 请求发送方法，封装axios，返回Promise对象

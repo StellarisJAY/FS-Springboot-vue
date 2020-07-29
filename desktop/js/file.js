@@ -21,6 +21,7 @@ var appVM = new Vue({
         path_stack: [1], // 路径栈
 
         download_queue: [], // 下载任务队列
+        downloading: false,
         downloadPath: '',   // 下载保存路径
         currentDownloadSpeed: '施工中',
         selected_list: [],  // 选中文件列表
@@ -65,6 +66,7 @@ var appVM = new Vue({
             request('/user_files', 'GET', {token: window.sessionStorage.getItem("token")}, {path: this.currentPath}, 2000)
             .then(resp=>{
                 that.files = resp.data;
+                that.clearSelectedList(); // 清空之前路径下选择的文件
             });
         },
 
@@ -146,9 +148,23 @@ var appVM = new Vue({
             request("/folder", "DELETE", {token: window.sessionStorage.getItem("token")}, {folder_id: folder_id}, 2000)
             .then(response=>{
                 appVM.getFilesAtCurrentPath();
+                appVM.getUsedSpace();
             });
         },
-
+        /**
+         * 删除文件：
+         * 发送删除文件请求，请求完成后刷新当前目录、刷新空间用量
+         * @param {*} file_id 
+         */
+        deleteFile: function(file_id){
+            if(confirm("是否确认删除该文件，删除后将无法找回") == true){
+                request("/user_file/delete", "DELETE", {token: window.sessionStorage.getItem("token")}, {file_id: file_id}, 2000)
+                .then(response=>{
+                    appVM.getFilesAtCurrentPath();
+                    appVM.getUsedSpace();
+                })
+            }
+        },
         /**
          * 更新已选列表：
          * 判断参数文件是否在已选列表，如果在就删除，否则添加
@@ -168,19 +184,31 @@ var appVM = new Vue({
             // 不在队列中，添加
             this.selected_list.push({file_id: file.file_id, filename: file.filename, size: file.size, type: file.type, progress: 0});
         },
-        getCurrentDownload: function(){
-            return this.download_queue[0];
+        /**
+         * 清空选择文件列表
+         * 该功能主要是在用户转到其他目录后避免之前目录选择的内容还在列表中
+         */
+        clearSelectedList: function(){
+            this.selected_list.length = 0;
         },
         /**
-         * 开始下载，初始化下载队列
-         * 
+         * 开始下载
+         * 1、该过程可能有两种情况，系统没有处于下载中状态、系统正在下载
+         * 2、首先将新的任务加入下载队列
+         * 3、判断是否正在下载，如果是不是正在下载：开始递归下载过程，设置下载flag
          * ！ ！ ！ 下载队列开始下载入口方法 ！ ！ ！
          */
         startMultiDownload: function(){
             // 把选中的文件装入下载队列
-            this.download_queue = this.selected_list.concat();
-            // 开始递归下载过程
-            this.download(this.download_queue[0]);
+            for(i=0; i<this.selected_list.length; i++){
+                this.download_queue.push(this.selected_list[i]);
+            }
+            // 判断现在是否已经是下载中
+            if(this.downloading==false){
+                // 不是下载中，开始下载过程
+                this.download(this.download_queue[0]);
+                this.downloading = true;
+            }
         },
         /**
          * 递归下载队列，逐个完成下载请求：
@@ -191,6 +219,7 @@ var appVM = new Vue({
          * @param {*} file_id 
          */ 
         download: function(file){
+            console.log(file);
             // 下载请求，当请求完成后再判断队列是否已完成，未完成就递归调用本身下载下一个
             download_request("/download/id", {file_id: file.file_id}, appVM)
             .then(response=>{
@@ -203,6 +232,10 @@ var appVM = new Vue({
                 // 判断是否还有未完成任务
                 if(appVM.download_queue.length > 0){
                     appVM.download(appVM.download_queue[0]);
+                }
+                else{
+                    // 所有任务完成，设置flag为false
+                    appVM.downloading = false;
                 }
             })
         },

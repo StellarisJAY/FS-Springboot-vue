@@ -122,4 +122,27 @@ public class UserFileController {
             os.write(bytes, 0, s);
         }
     }
+
+    @RequestMapping(value="/user_file/delete", method=RequestMethod.DELETE)
+    public void deleteUserFile(int file_id, HttpServletRequest request, HttpServletResponse response) throws IOException{
+        response.setContentType("text/json;charset=utf-8");
+        String token = request.getHeader("token");
+        int user_id = TokenUtil.getUserId(token);
+        logger.info("接收到删除文件请求：token=" + token + ";file_id=" + file_id);
+
+        Map<String, String> map = new HashMap<>();
+        try{
+            int status = userFileService.deleteFile(file_id, user_id);
+            if(status == 1){
+                map.put("status", "1");
+                map.put("message", "删除成功");
+            }
+        }
+        catch(RuntimeException e){
+            map.put("status", "0");
+            map.put("message", "文件删除失败");
+        }
+
+        response.getWriter().write(JSONUtils.toJSONString(map));
+    }
 }

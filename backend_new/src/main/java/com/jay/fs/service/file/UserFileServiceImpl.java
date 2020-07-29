@@ -7,6 +7,7 @@ import com.jay.fs.dao.UserDao;
 import com.jay.fs.dao.UserFileDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -69,5 +70,34 @@ public class UserFileServiceImpl implements UserFileService{
     @Override
     public FileBean getFileById(int file_id, int user_id) {
         return userFileDao.getFileById(file_id, user_id);
+    }
+
+    @Override
+    @Transactional
+    public Integer deleteFile(int file_id, int user_id) throws RuntimeException{
+        String fileUrl = userFileDao.getFileUrl(file_id);
+        int fileSize = userFileDao.getFileSize(file_id);
+        int dbStatus = userFileDao.deleteFile(file_id, user_id);
+
+        // 如果删除文件失败，抛出RumtimeException，触发数据库回滚
+        if(dbStatus == 0) throw new RuntimeException();
+
+        // db删除成功，继续执行文件系统删除
+        boolean fsStatus = false;
+
+        File deletedFile = new File(fileUrl);
+        // 从文件系统删除该文件
+        if(deletedFile.exists() && dbStatus > 0){
+            fsStatus = deletedFile.delete();
+        }
+        // 如果文件系统删除失败，抛出RuntimeException，触发回滚
+        if(fsStatus == false) throw new RuntimeException();
+
+        // 更改用户空间用量
+        int usedSpaceStatus = userDao.usedSpaceDecrease(user_id, fileSize);
+        // 如果用户空间用量更改失败，回滚
+        if(usedSpaceStatus==0) throw new RuntimeException();
+
+        return 1;
     }
 }

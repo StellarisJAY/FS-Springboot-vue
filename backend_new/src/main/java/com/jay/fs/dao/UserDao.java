@@ -34,4 +34,7 @@ public interface UserDao {
 
     @Update("UPDATE tb_user SET used_space=#{used_space} WHERE user_id=#{user_id}")
     public Integer setUsedSpace(@Param("used_space") Integer used_space, @Param("user_id") Integer user_id);
+
+    @Update("UPDATE tb_user SET used_space=used_space-#{offset} WHERE user_id=#{user_id}")
+    public Integer usedSpaceDecrease(Integer user_id, Integer offset);
 }

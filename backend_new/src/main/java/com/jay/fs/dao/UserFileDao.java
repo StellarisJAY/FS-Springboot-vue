@@ -46,6 +46,13 @@ public interface UserFileDao {
             "uf.file_id=f.file_id")
     public FileBean getFileById(int file_id, int user_id);
 
+    @Select("SELECT url FROM tb_file WHERE file_id=#{file_id}")
+    public String getFileUrl(int file_id);
+
+    @Select("SELECT size FROM tb_file WHERE file_id=#{file_id}")
+    public Integer getFileSize(int file_id);
+
     @Select("SELECT MAX(file_id) FROM tb_file;")
     public Integer getMaxId();
+
 }

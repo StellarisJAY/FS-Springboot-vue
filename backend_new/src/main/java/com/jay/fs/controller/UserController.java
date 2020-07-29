@@ -1,5 +1,6 @@
 package com.jay.fs.controller;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.jay.fs.bean.UserBean;
 import com.jay.fs.dao.UserDao;
 import com.jay.fs.util.TokenUtil;
@@ -12,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -60,5 +65,26 @@ public class UserController {
         String token = request.getHeader("token");
         logger.info("接收到获取总容量请求：token=" + token);
         return userDao.getMaxSpace(TokenUtil.getUserId(token));
+    }
+
+    /**
+     * 用户注销请求处理
+     * 1、获取用户token
+     * 2、从服务器token表删除该token，即删除了该用户的登陆状态
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping(value="/user/logout", method=RequestMethod.POST)
+    public void userLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String token = request.getHeader("token");
+        logger.info("用户：token=" + token + "请求退出登陆状态");
+        TokenUtil.removeToken(token);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("message", "用户注销成功");
+        map.put("status", "1");
+        response.setContentType("text/json;charset=utf-8");
+        response.getWriter().write(JSONUtils.toJSONString(map));
     }
 }

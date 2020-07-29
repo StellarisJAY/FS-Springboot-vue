@@ -9,4 +9,6 @@ public interface UserFileService {
     public Integer addNewFile(MultipartFile file, int user_id, int path);
 
     public FileBean getFileById(int file_id, int user_id);
+
+    public Integer deleteFile(int file_id, int user_id);
 }

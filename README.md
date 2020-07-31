@@ -1,4 +1,4 @@
-# Simple Netdisk
+# Simple NetworkDisk
 多平台网盘工具，使用SpringBoot后端框架，网页前端使用vue框架，app端使用微信小程序框架，桌面端使用electron+vue+bootstrap技术栈完成（接口与网页端相同）
 
 

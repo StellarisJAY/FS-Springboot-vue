@@ -2,6 +2,7 @@ package com.jay.fs.controller;
 
 import com.alibaba.druid.support.json.JSONUtils;
 import com.jay.fs.bean.UserBean;
+import com.jay.fs.common.CommonResult;
 import com.jay.fs.dao.UserDao;
 import com.jay.fs.util.TokenUtil;
 import org.slf4j.Logger;
@@ -34,10 +35,12 @@ public class UserController {
      * @return
      */
     @RequestMapping(value="/user/name", method= RequestMethod.GET)
-    public UserBean getUserByName(String username){
+    public CommonResult getUserByName(String username){
         UserBean user = userDao.getUserByName(username);
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("user", user);
 
-        return user==null? null : user;
+        return CommonResult.success("获取用户信息成功").addDataItem("user", user);
     }
 
     /**
@@ -47,24 +50,28 @@ public class UserController {
      * @return
      */
     @RequestMapping(value="/user/id", method=RequestMethod.GET)
-    public UserBean getUserById(int user_id){
+    public CommonResult getUserById(int user_id){
         UserBean user = userDao.getUserById(user_id);
 
-        return user;
+        return CommonResult.success(user==null?"用户不存在":"用户存在").addDataItem("user", user);
     }
 
     @RequestMapping(value="/user/used_space", method = RequestMethod.GET)
-    public Integer getUsedSpace(HttpServletRequest request){
+    public CommonResult getUsedSpace(HttpServletRequest request){
         String token = request.getHeader("token");
         logger.info("接收到获取已使用空间请求：token=" + token);
-        return userDao.getUsedSpace(TokenUtil.getUserId(token));
+        int used_space = userDao.getUsedSpace(TokenUtil.getUserId(token));
+
+        return CommonResult.success("获取空间用量成功").addDataItem("used_space", used_space);
     }
 
     @RequestMapping(value="/user/max_space", method=RequestMethod.GET)
-    public Integer getMaxSpace(HttpServletRequest request){
+    public CommonResult getMaxSpace(HttpServletRequest request){
         String token = request.getHeader("token");
         logger.info("接收到获取总容量请求：token=" + token);
-        return userDao.getMaxSpace(TokenUtil.getUserId(token));
+        int max_space = userDao.getMaxSpace(TokenUtil.getUserId(token));
+
+        return CommonResult.success("获取总容量成功").addDataItem("max_space", max_space);
     }
 
     /**
@@ -76,15 +83,11 @@ public class UserController {
      * @throws IOException
      */
     @RequestMapping(value="/user/logout", method=RequestMethod.POST)
-    public void userLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public CommonResult userLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String token = request.getHeader("token");
         logger.info("用户：token=" + token + "请求退出登陆状态");
         TokenUtil.removeToken(token);
 
-        Map<String, String> map = new HashMap<>();
-        map.put("message", "用户注销成功");
-        map.put("status", "1");
-        response.setContentType("text/json;charset=utf-8");
-        response.getWriter().write(JSONUtils.toJSONString(map));
+        return CommonResult.success("注销成功");
     }
 }

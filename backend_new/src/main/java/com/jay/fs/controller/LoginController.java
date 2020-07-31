@@ -3,6 +3,7 @@ package com.jay.fs.controller;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.jay.fs.bean.UserBean;
+import com.jay.fs.common.CommonResult;
 import com.jay.fs.dao.UserDao;
 import com.jay.fs.util.TokenUtil;
 import jdk.nashorn.internal.parser.Token;
@@ -24,33 +25,29 @@ import java.util.Map;
 public class LoginController {
     @Autowired
     private UserDao userDao;
+    // logger
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @RequestMapping(value="/login", method= RequestMethod.POST)
     @ResponseBody
-    public void login(String username, String password, HttpServletResponse response) throws IOException {
-        System.out.println("接收登录请求：username=" + username + "password=" + password);
-        response.setContentType("application/json;charset=utf-8");
+    public CommonResult login(String username, String password, HttpServletResponse response) throws IOException {
+        logger.info("接收登录请求：username=" + username + "password=" + password);
+
         // 从数据库获取 user信息
         UserBean user = userDao.getUserByName(username);
 
-        Map<String, String> map = new HashMap<>();
         if(user == null){
-            map.put("status", "-1");
-            map.put("message", "用户不存在");
+            return CommonResult.success("用户不存在").addDataItem("login_status", 0);
         }
         else if(!user.getPassword().equals(password)){
             // 密码错误，json返回message
-            map.put("status", "0");
-            map.put("message", "密码错误");
+            return CommonResult.success("密码错误").addDataItem("login_status", -1);
         }
         else{
             // 记录用户登陆状态，写入 token
             String token = TokenUtil.getToken(username, password);
             TokenUtil.putToken(token, user.getUser_id());
-            map.put("status", "1");
-            map.put("token", token);
+            return CommonResult.success("登陆成功").addDataItem("token", token).addDataItem("login_status", 1);
         }
-
-        response.getWriter().write(JSONUtils.toJSONString(map));
     }
 }

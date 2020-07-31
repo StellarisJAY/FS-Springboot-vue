@@ -34,7 +34,8 @@ public class FolderServiceImpl implements FolderService{
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public Integer createFolder(String foldername, Integer path, Integer user_id) {
+    @Transactional
+    public Integer createFolder(String foldername, Integer path, Integer user_id) throws RuntimeException{
         FileBean folder = new FileBean();
         FileCreator creator = new FileCreator();
         creator.setUser_id(user_id);
@@ -52,6 +53,10 @@ public class FolderServiceImpl implements FolderService{
         folder.setFile_id(id);
         // 数据库创建新记录
         int status = folderDao.addFolder(folder, path);
+        // 创建失败，抛出异常，回滚
+        if(status == 0){
+            throw new RuntimeException();
+        }
         // logger记录
         logger.info("创建文件夹：name=" + foldername + " ; path=" + path + ";user_id=" + user_id);
         logger.info("创建文件夹状态码：status: " + status);

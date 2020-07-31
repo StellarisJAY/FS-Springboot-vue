@@ -65,7 +65,7 @@ var appVM = new Vue({
             // 发送文件获取请求
             request('/user_files', 'GET', {token: window.sessionStorage.getItem("token")}, {path: this.currentPath}, 2000)
             .then(resp=>{
-                that.files = resp.data;
+                that.files = resp.data.data.files;
                 that.clearSelectedList(); // 清空之前路径下选择的文件
             });
         },
@@ -77,7 +77,7 @@ var appVM = new Vue({
             var that = this;
             request('/user/used_space', 'GET', {token: window.sessionStorage.getItem("token")}, null, 2000)
             .then(response=>{
-                that.used_space = response.data;
+                that.used_space = response.data.data.used_space;
             }); 
         },
 
@@ -88,7 +88,7 @@ var appVM = new Vue({
             var that = this;
             request('/user/max_space', 'GET', {token: window.sessionStorage.getItem('token')}, null, 2000)
             .then(response=>{
-                that.max_space = response.data;
+                that.max_space = response.data.data.max_space;
             });
         },
 
@@ -300,9 +300,8 @@ var createFolderVM = new Vue({
                 // 发送重名检查请求
                 request("/folder/check/name", "GET", {token:window.sessionStorage.getItem("token")}, 
                 {name:this.name, path:window.sessionStorage.getItem("currentPath")}, 2000)
-                .then(data=>{
-                    console.log(data);
-                    if(data.data == 1){
+                .then(response=>{
+                    if(response.data.data.duplicate == true){
                         that.nameDuplicate = true;
                     }
                     else{
@@ -369,11 +368,9 @@ var uploadVM = new Vue({
                 // 发送上传文件请求
                 request_post("/file/upload", this.upload_file, config)
                 .then(response=>{
-                    if(response.data.status == '1'){
-                        appVM.getFilesAtCurrentPath(); // 上传成功，刷新当前目录
-                        appVM.getUsedSpace();     // 刷新已用空间
-                        $("#uploadModal").modal('hide'); // 隐藏上传modal
-                    }
+                    appVM.getFilesAtCurrentPath(); // 上传成功，刷新当前目录
+                    appVM.getUsedSpace();     // 刷新已用空间
+                    $("#uploadModal").modal('hide'); // 隐藏上传modal
                 })
             }
         }

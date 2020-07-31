@@ -15,7 +15,7 @@
  5、管理员平台
  
  # 说明
- ## 源代码说明
+ ## 源码结构说明
  1、backend_new（稳定）: 新的后端源代码，采用springboot编写
  
  2、desktop（开发中）：桌面端前端代码，采用html+js+css，使用了npm、vue.js、axios、bootstrap等前端技术栈，通过electron打包成桌面应用

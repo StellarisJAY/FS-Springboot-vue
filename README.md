@@ -1,6 +1,9 @@
 # Simple NetworkDisk
 多平台网盘工具，使用SpringBoot后端框架，网页前端使用vue框架，app端使用微信小程序框架，桌面端使用electron+vue+bootstrap技术栈完成（接口与网页端相同）
 
+## 更新计划：
+1、后端代码修改（1）：整合SpringSecurity、整合swaggerUI接口文档、整合ElasticSearch搜索
+2、后端代码修改（2）：使用redis缓存（替代原有的全局变量）
 
 # 功能模块
 
